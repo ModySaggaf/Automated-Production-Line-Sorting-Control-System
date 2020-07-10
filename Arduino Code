@@ -1,0 +1,48 @@
+#include<Servo.h>
+Servo ServoMotor;
+
+int trigPin = 7;
+int echoPin = 6;
+float duration; //in microseconds
+float speed = 0.0343; //The speed of sound in centimeteres per microseconds
+float distance; //in centimeters
+int Height = 40; //The height of the Ultrasonic Sensor from the production line
+int boxHeight;
+
+void setup()
+{
+  ServoMotor.attach(2);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  
+  duration = pulseIn(echoPin, HIGH); //Measuring the the sound wave duration
+  distance = (speed*duration)/2 ; //Measuring the sensor-to-refrence distance
+  boxHeight = Height - distance; //Measuring the box height
+
+  Serial.print("The Box Height is: ");
+  Serial.println(boxHeight); //Printing the box height in the Serial Monitor
+  delay(100);
+    
+  if (boxHeight == 30){
+  ServoMotor.write(0);
+   delay(100);
+  }
+  if (boxHeight == 20){
+  ServoMotor.write(45);
+   delay(100);
+  }    
+  if (boxHeight == 10){
+  ServoMotor.write(90);
+   delay(100);
+  }
+}
